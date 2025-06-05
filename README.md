@@ -178,8 +178,6 @@ GET    /api/v1/tasks/{id}     # 获取任务
 PUT    /api/v1/tasks/{id}     # 更新任务
 DELETE /api/v1/tasks/{id}     # 删除任务
 GET    /api/v1/tasks          # 任务列表
-POST   /api/v1/tasks/{id}/start # 启动任务
-POST   /api/v1/tasks/{id}/stop  # 停止任务
 ```
 
 ## 核心流程
