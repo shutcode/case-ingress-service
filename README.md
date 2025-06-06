@@ -327,3 +327,35 @@ graph LR
 5. 分布式任务调度：支持大规模任务调度
 
 本设计通过模块化、插件化的架构，实现了案件数据导入服务的灵活性和可扩展性，能够适应不同数据源的接入需求，同时保证了系统的稳定性和可靠性。
+
+## API Definition and Code Generation
+
+The service uses **Protocol Buffers (Protobuf)** for defining API contracts. The primary Protobuf definition file is located at `proto/case.proto`. This file includes:
+
+-   `CaseEvent`: Message representing the case data sent to the message queue.
+-   `ImportEventRequest`: Request message for the import operation.
+-   `ImportEventResponse`: Response message for the import operation.
+-   `CaseImportService`: The gRPC service definition for case imports.
+
+**Hertz** framework code (handlers, server boilerplate) is generated from these Protobuf definitions using the `hz` command-line tool. This ensures type safety and consistency between the API definition and its implementation.
+
+## Message Queue Integration
+
+After processing an import, the resulting case event data is published to a message queue for asynchronous consumption by other services.
+
+-   **Abstraction**: A message queue interface is defined in `pkg/messagequeue/mq.go` (`MessageQueue` interface) to allow for different MQ implementations.
+-   **Kafka Implementation**: The primary implementation uses **Kafka**, located in `pkg/messagequeue/kafka_producer.go`. It utilizes the `segmentio/kafka-go` library.
+-   **Output Event**: The `CaseEvent` (defined in `proto/case.proto`) is the standard message format published to the queue.
+
+## Configuration Management
+
+The application uses **Viper** for managing configurations. Configuration can be supplied via:
+
+-   A `conf/config.yaml` file.
+-   Environment variables (e.g., `KAFKA_BROKERS`, `KAFKA_TOPIC`).
+
+Key configurable parameters include:
+-   Kafka broker addresses.
+-   Kafka topic for publishing case events.
+
+The configuration loading logic is centralized in the `pkg/config` package.
