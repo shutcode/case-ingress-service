@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "github.com/yourusername/yourrepository/biz/model/proto"; // Adjust with your actual module path
+
+import "google/protobuf/timestamp.proto";
+
+// Message representing a case event to be sent to the message queue
+message CaseEvent {
+  string case_id = 1;
+  string case_type = 2;
+  bytes data = 3; // Can be JSON, XML, or another serialized format
+  google.protobuf.Timestamp timestamp = 4;
+  map<string, string> metadata = 5; // Optional metadata
+}
+
+// Request message for publishing a case event
+message ImportEventRequest {
+  CaseEvent event = 1;
+}
+
+// Response message after attempting to publish a case event
+message ImportEventResponse {
+  bool success = 1;
+  string message = 2; // Optional message, e.g., error message
+  string event_id = 3; // Optional ID of the published event, if available
+}
+
+// Service definition for case import
+service CaseImportService {
+  // Method to publish a case event
+  rpc PublishCaseEvent(ImportEventRequest) returns (ImportEventResponse);
+}

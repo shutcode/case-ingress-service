@@ -1,0 +1,5 @@
+kafka:
+  brokers:
+    - "localhost:9092" # Default Kafka broker
+    - "kafka:9092"     # For docker-compose like environments
+  topic: "case-events"    # Default Kafka topic
